@@ -1,4 +1,4 @@
-﻿namespace LogTreatment
+﻿namespace LogTreatment.Models
 {
     public class Log
     {

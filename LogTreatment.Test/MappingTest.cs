@@ -1,11 +1,11 @@
 using FluentAssertions;
-using LogTreatment;
+using LogTreatment.Business;
 using System;
 using System.IO;
 using System.Text;
 using Xunit;
 
-namespace XUnitTestProject1
+namespace LogTreatment.Test
 {
     public class MappingTest
     {
@@ -13,8 +13,8 @@ namespace XUnitTestProject1
         public void TestMap()
         {
             string url = "https://s3.amazonaws.com/uux-itaas-static/minha-cdn-logs/input-01.txt";
-            Mapping mapping = new Mapping(url);
-            string fileLog = mapping.MapMinhaCdnToAgora();
+            LogBusiness logBusiness = new LogBusiness(url);
+            string fileLog = logBusiness.MapMinhaCdnToAgora();
 
             StringBuilder expectedLog = new StringBuilder();
             expectedLog.AppendLine("#Fields: provider http-method status-code uri-path time-taken response - size cache - status");
@@ -31,9 +31,9 @@ namespace XUnitTestProject1
         public void TestInvalidUrl()
         {
             string url = "test";
-            Mapping mapping = new Mapping(url);
+            LogBusiness logBusiness = new LogBusiness(url);
 
-            Action action = () => mapping.MapMinhaCdnToAgora();
+            Action action = () => logBusiness.MapMinhaCdnToAgora();
             action.Should().Throw<Exception>().WithMessage("The url is invalid");
         }
 
@@ -41,10 +41,11 @@ namespace XUnitTestProject1
         public void TestEmtpyUrl()
         {
             string url = string.Empty;
-            Mapping mapping = new Mapping(url);
+            LogBusiness logBusiness = new LogBusiness(url);
 
-            Action action = () => mapping.MapMinhaCdnToAgora();
+            Action action = () => logBusiness.MapMinhaCdnToAgora();
             action.Should().Throw<Exception>().WithMessage("The url is empty");
         }
+
     }
 }

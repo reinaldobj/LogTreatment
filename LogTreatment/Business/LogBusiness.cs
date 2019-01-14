@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LogTreatment.Models;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -6,13 +7,13 @@ using System.Linq;
 using System.Net;
 using System.Text;
 
-namespace LogTreatment
+namespace LogTreatment.Business
 {
-    public class Mapping
+    public class LogBusiness
     {
         private string Url {get;set;}
         
-        public Mapping(string url)
+        public LogBusiness(string url)
         {
             Url = url;
         }
@@ -23,7 +24,7 @@ namespace LogTreatment
 
             string logsCdn = DownloadLogsCdn();
 
-            IList<Log> logs = GenerateLogs(logsCdn);
+            IList<Models.Log> logs = GenerateLogs(logsCdn);
 
             string logsAgora = GenerateLogsAgora(logs);
 
@@ -54,14 +55,14 @@ namespace LogTreatment
             file.Close();
         }
 
-        private string GenerateLogsAgora(IList<Log> logs)
+        private string GenerateLogsAgora(IList<Models.Log> logs)
         {
             StringBuilder logAgora = new StringBuilder();
             logAgora.AppendLine($"#Version: 1.0");
             logAgora.AppendLine($"#Date: {DateTime.Now}");
             logAgora.AppendLine($"#Fields: provider http-method status-code uri-path time-taken response - size cache - status");
 
-            foreach(Log log in logs)
+            foreach(Models.Log log in logs)
             {
                 string logLine;
                 logLine = $"\"{log.Provider}\" {log.HttpMethod} {log.StatusCode} { log.UriPath } {log.TimeTaken} {log.ResponseSize} {log.CacheStatus}";
@@ -72,9 +73,9 @@ namespace LogTreatment
             return logAgora.ToString();
         }
 
-        private IList<Log> GenerateLogs(string logsCdn)
+        private IList<Models.Log> GenerateLogs(string logsCdn)
         {
-            IList<Log> logs = new List<Log>();
+            IList<Models.Log> logs = new List<Models.Log>();
 
             string[] logsCdnArray = logsCdn.Split(Environment.NewLine);
             for (int i = 0; i < logsCdnArray.Length - 1; i++)
@@ -92,7 +93,7 @@ namespace LogTreatment
                 string httpMethod = logHttpFields[0].Replace("\"", "");
                 string uriPath = logHttpFields[1];
 
-                Log log = new Log(provider, httpMethod, status, uriPath, timeTaken, responseSize, cacheStatus);
+                Models.Log log = new Models.Log(provider, httpMethod, status, uriPath, timeTaken, responseSize, cacheStatus);
                 logs.Add(log);
             }
 

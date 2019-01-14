@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LogTreatment.Business;
+using System;
 
 namespace LogTreatment
 {
@@ -12,8 +13,8 @@ namespace LogTreatment
                 Console.WriteLine("Enter the url of the log to download and map");
                 string url = Console.ReadLine();
 
-                Mapping mapping = new Mapping(url);
-                string filename = mapping.MapMinhaCdnToAgora();
+                LogBusiness logBusiness = new LogBusiness(url);
+                string filename = logBusiness.MapMinhaCdnToAgora();
 
                 Console.WriteLine($"The mapped log was saved as {filename}");
             }
